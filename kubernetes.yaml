@@ -120,9 +120,6 @@ spec:
             - name: POSTGRES_HOST
               value: django-api-rest-db-service
 
-          volumeMounts:
-            - name: django-api-rest-volume-mount
-              mountPath: /var/lib/busybox
       initContainers:
         - name: django-api-rest-init
           image: calvarado2004/django-rest-sample:0.1
