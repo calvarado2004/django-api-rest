@@ -131,7 +131,7 @@ spec:
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: postgres-credentials
+                  name: django-api-rest-credentials
                   key: user
 
             - name: POSTGRES_PASSWORD
