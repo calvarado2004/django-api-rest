@@ -142,10 +142,6 @@ spec:
 
             - name: POSTGRES_HOST
               value: django-api-rest-db-service
-      volumes:
-        - name: django-api-rest-volume-mount
-          persistentVolumeClaim:
-            claimName: django-api-rest-pvc
 ---
 kind: Service
 apiVersion: v1
