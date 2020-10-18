@@ -26,7 +26,7 @@ SECRET_KEY = '7@3q(%o6!-65i45spk4g3o86r3yy1%2(@ftz4eang!e9_%+kig'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = False
 
 ALLOWED_HOSTS = ['*']
 
