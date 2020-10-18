@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django-api-rest
+  namespace: calvarado2004
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: django-api-rest-container
+  template:
+    metadata:
+      labels:
+        app: django-api-rest-container
+    spec:
+      containers:
+        - name: django-api-rest-container
+          image: {{ CONTAINER_IMAGE }}:{{ TAG_USED }}
+          ports:
+            - containerPort: 8000
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: django-api-rest-credentials
+                  key: user
+
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: django-api-rest-credentials
+                  key: password
+
+            - name: POSTGRES_HOST
+              value: django-api-rest-db-service
+
+      initContainers:
+        - name: django-api-rest-init
+          image: {{ CONTAINER_IMAGE }}:{{ TAG_USED }}
+          command: ['python', 'manage.py', 'migrate']
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: django-api-rest-credentials
+                  key: user
+
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: django-api-rest-credentials
+                  key: password
+
+            - name: POSTGRES_HOST
+              value: django-api-rest-db-service
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: django-api-rest-service
+  namespace: calvarado2004
+  annotations:
+    dev.okteto.com/auto-ingress: "true"
+spec:
+  selector:
+    app: django-api-rest-container
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
