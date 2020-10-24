@@ -121,6 +121,23 @@ spec:
             - containerPort: 443
           command: ["/bin/sh"]
           args: ["-c", "while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\""]
+      initContainers:
+        - name: django-api-rest-init
+          image: {{ CONTAINER_IMAGE }}:{{ TAG_USED }}
+          command: ['python', 'manage.py', 'migrate']
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: django-api-rest-credentials
+                  key: user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: django-api-rest-credentials
+                  key: password
+            - name: POSTGRES_HOST
+              value: django-api-rest-db-service
         - name: certbot-container
           image: certbot/certbot
           volumeMounts: 
@@ -140,25 +157,6 @@ spec:
         - name: nginx-config
           configMap:
             name: nginx-config-map
-      initContainers:
-        - name: django-api-rest-init
-          image: {{ CONTAINER_IMAGE }}:{{ TAG_USED }}
-          command: ['python', 'manage.py', 'migrate']
-          env:
-            - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: django-api-rest-credentials
-                  key: user
-
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: django-api-rest-credentials
-                  key: password
-
-            - name: POSTGRES_HOST
-              value: django-api-rest-db-service
 ---
 kind: Service
 apiVersion: v1
