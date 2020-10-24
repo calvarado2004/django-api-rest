@@ -31,6 +31,7 @@ metadata:
   name: nginx-config-map
 data:
   nginx.conf: |-
+    events {}
     http {
       include /etc/nginx/conf.d/*.conf;
 
