@@ -59,7 +59,6 @@ data:
 
           ssl_certificate /etc/letsencrypt/live/calvarado04.com/fullchain.pem;
           ssl_certificate_key /etc/letsencrypt/live/calvarado04.com/privkey.pem;
-          ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
           location /api/ {
               proxy_pass http://backend_server/;
