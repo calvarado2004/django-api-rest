@@ -47,7 +47,7 @@ data:
 
       }
       server {
-          listen 443 ssl;
+          listen 443 ssl default_server;
           server_name nginx-api-rest-service-calvarado2004.cloud.okteto.net;
           ssl on;
           ssl_certificate /etc/letsencrypt/live/calvarado04.com/fullchain.pem;
@@ -200,5 +200,5 @@ spec:
   ports:
     - name: "nginx-api-rest"
       protocol: TCP
-      port: 80
-      targetPort: 80
+      port: 443
+      targetPort: 443
