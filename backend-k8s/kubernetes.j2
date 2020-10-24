@@ -43,7 +43,7 @@ data:
           listen 80 default_server;
           server_name _;
 
-          return 301 https://$host$request_uri;
+          return 301 https://django-api-rest-service:8000$request_uri;
 
       }
       server {
@@ -200,5 +200,5 @@ spec:
   ports:
     - name: "nginx-api-rest"
       protocol: TCP
-      port: 443
-      targetPort: 443
+      port: 80
+      targetPort: 80
