@@ -124,8 +124,8 @@ spec:
             - name: certbot-www-volume-mount
               mountPath: /var/www/certbot
             - name: nginx-config
-              mountPath: /etc/nginx/conf.d/nginx.conf
-              subPath: nginx.conf
+              mountPath: /etc/letsencrypt/options-ssl-nginx.conf
+              subPath: options-ssl-nginx.conf
           ports:
             - containerPort: 443
           command: ["/bin/sh"]
