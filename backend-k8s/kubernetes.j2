@@ -33,7 +33,7 @@ data:
   nginx.conf: |-
     http {
       include /etc/nginx/conf.d/*.conf;
-      
+
       upstream backend_server {
           server django-api-rest-service:8000;
       }
@@ -57,8 +57,8 @@ data:
           listen 443 ssl;
           root /var/www/frontend;
 
-          ssl_certificate /etc/letsencrypt/live/your-domain.com/fullchain.pem;
-          ssl_certificate_key /etc/letsencrypt/live/your-domain.com/privkey.pem;
+          ssl_certificate /etc/letsencrypt/live/calvarado04.com/fullchain.pem;
+          ssl_certificate_key /etc/letsencrypt/live/calvarado04.com/privkey.pem;
           ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
           location /api/ {
