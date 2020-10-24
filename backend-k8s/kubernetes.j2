@@ -1,3 +1,79 @@
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: certbot-conf-pvc
+  namespace: calvarado2004
+spec:
+  storageClassName: standard
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: certbot-www-pvc
+  namespace: calvarado2004
+spec:
+  storageClassName: standard
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config-map
+data:
+  nginx.conf: |-
+    upstream backend_server {
+        server django-api-rest-service:8000;
+    }
+
+    server {
+        listen 80;
+
+        location /.well-known/acme-challenge/ {
+            root /var/www/certbot;
+        }
+
+        location /api/ {
+            return 301 https://$host$request_uri;
+        }
+
+        location / {
+            return 301 https://$host$request_uri;
+        }
+    }
+    server {
+        listen 443 ssl;
+        root /var/www/frontend;
+
+        ssl_certificate /etc/letsencrypt/live/your-domain.com/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/your-domain.com/privkey.pem;
+        include /etc/letsencrypt/options-ssl-nginx.conf;
+        ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+        location /api/v1/ {
+            proxy_pass http://backend_server/;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $https;
+            proxy_connect_timeout 360s;
+            proxy_read_timeout 360s;
+        }
+
+        location / {
+            try_files $uri /index.html;
+        }
+    }
+---      
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -24,16 +100,46 @@ spec:
                 secretKeyRef:
                   name: django-api-rest-credentials
                   key: user
-
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: django-api-rest-credentials
                   key: password
-
             - name: POSTGRES_HOST
               value: django-api-rest-db-service
-
+        - name: nginx-api-rest-container
+          image: nginx:latest
+          volumeMounts: 
+            - name: certbot-conf-volume-mount
+              mountPath: /etc/letsencrypt
+            - name: certbot-www-volume-mount
+              mountPath: /var/www/certbot
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d/nginx.conf
+              subPath: nginx.conf
+          ports:
+            - containerPort: 443
+          command: ["/bin/sh"]
+          args: ["-c", "while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\""]
+        - name: certbot-container
+          image: certbot/certbot
+          volumeMounts: 
+            - name: certbot-conf-volume-mount
+              mountPath: /etc/letsencrypt
+            - name: certbot-www-volume-mount
+              mountPath: /var/www/certbot
+          command: ["/bin/sh"]
+          args: ["-c", "trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"]
+      volumes:
+        - name: certbot-conf-volume-mount
+          persistentVolumeClaim:
+            claimName: certbot-conf-pvc
+        - name: certbot-www-volume-mount
+          persistentVolumeClaim:
+            claimName: certbot-www-pvc
+        - name: nginx-config
+          configMap:
+            name: nginx-config-map
       initContainers:
         - name: django-api-rest-init
           image: {{ CONTAINER_IMAGE }}:{{ TAG_USED }}
@@ -59,8 +165,6 @@ apiVersion: v1
 metadata:
   name: django-api-rest-service
   namespace: calvarado2004
-  annotations:
-    dev.okteto.com/auto-ingress: "domain"
 spec:
   selector:
     app: django-api-rest-container
@@ -70,3 +174,20 @@ spec:
       protocol: TCP
       port: 8000
       targetPort: 8000
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: nginx-api-rest-service
+  namespace: calvarado2004
+  annotations:
+    dev.okteto.com/auto-ingress: "private"
+spec:
+  selector:
+    app: django-api-rest-container
+  type: ClusterIP
+  ports:
+    - name: "django-api-rest"
+      protocol: TCP
+      port: 443
+      targetPort: 443
