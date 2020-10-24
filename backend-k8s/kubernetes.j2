@@ -64,7 +64,9 @@ metadata:
 spec:
   selector:
     app: django-api-rest-container
+  type: ClusterIP
   ports:
-    - protocol: TCP
+    - name: "django-api-rest"
+      protocol: TCP
       port: 8000
       targetPort: 8000
