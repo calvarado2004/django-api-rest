@@ -32,7 +32,7 @@ metadata:
 data:
   nginx.conf: |-
     upstream backend_server {
-        server localhost:8000;
+        server django-api-rest-service:8000;
     }
 
     server {
