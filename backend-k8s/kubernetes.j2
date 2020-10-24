@@ -217,7 +217,11 @@ spec:
     app: nginx-api-rest-container
   type: ClusterIP
   ports:
-    - name: "nginx-api-rest-http"
-      protocol: TCP
-      port: 80
-      targetPort: 80
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 80
+  - name: https
+    protocol: TCP
+    port: 443
+    targetPort: 443
