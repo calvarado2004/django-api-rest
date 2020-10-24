@@ -43,10 +43,6 @@ data:
           listen 80 default_server;
           server_name _;
 
-          location /api/ {
-            root /api/;
-          }
-
           location / {
               proxy_pass http://backend_server;
               proxy_set_header Host $http_host;
@@ -61,14 +57,10 @@ data:
       }
       server {
           listen 443 ssl default_server;
-          server_name nginx-api-rest-service-calvarado2004.cloud.okteto.net;
-          ssl off;
+          server_name _;
+          ssl on;
           ssl_certificate /etc/letsencrypt/live/calvarado04.com/fullchain.pem;
           ssl_certificate_key /etc/letsencrypt/live/calvarado04.com/privkey.pem;
-
-          location /api/ {
-            root /api/;
-          }
 
           location / {
               proxy_pass http://backend_server;
