@@ -44,6 +44,13 @@ data:
           server_name _;
 
           location / {
+              if ($request_method = OPTIONS) {
+                return 204;
+              }
+              add_header Access-Control-Allow-Origin *;
+              add_header Access-Control-Max-Age 3600;
+              add_header Access-Control-Expose-Headers Content-Length;
+              add_header Access-Control-Allow-Headers Range;
               proxy_pass http://backend_server;
               proxy_set_header Host $http_host;
               proxy_redirect off;
@@ -63,6 +70,13 @@ data:
           ssl_certificate_key /etc/letsencrypt/live/calvarado04.com/privkey.pem;
 
           location / {
+              if ($request_method = OPTIONS) {
+                return 204;
+              }
+              add_header Access-Control-Allow-Origin *;
+              add_header Access-Control-Max-Age 3600;
+              add_header Access-Control-Expose-Headers Content-Length;
+              add_header Access-Control-Allow-Headers Range;
               proxy_pass http://backend_server;
               proxy_set_header Host $http_host;
               proxy_redirect off;
