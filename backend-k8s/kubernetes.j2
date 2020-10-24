@@ -123,6 +123,40 @@ spec:
                   key: password
             - name: POSTGRES_HOST
               value: django-api-rest-db-service
+      initContainers:
+        - name: django-api-rest-init
+          image: {{ CONTAINER_IMAGE }}:{{ TAG_USED }}
+          command: ['python', 'manage.py', 'migrate']
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: django-api-rest-credentials
+                  key: user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: django-api-rest-credentials
+                  key: password
+            - name: POSTGRES_HOST
+              value: django-api-rest-db-service
+---      
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-api-rest
+  namespace: calvarado2004
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-api-rest-container
+  template:
+    metadata:
+      labels:
+        app: nginx-api-rest-container
+    spec:
+      containers:
         - name: certbot-container
           image: certbot/certbot
           volumeMounts: 
@@ -149,23 +183,6 @@ spec:
             - containerPort: 443
           command: ["/bin/sh"]
           args: ["-c", "while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\""]
-      initContainers:
-        - name: django-api-rest-init
-          image: {{ CONTAINER_IMAGE }}:{{ TAG_USED }}
-          command: ['python', 'manage.py', 'migrate']
-          env:
-            - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: django-api-rest-credentials
-                  key: user
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: django-api-rest-credentials
-                  key: password
-            - name: POSTGRES_HOST
-              value: django-api-rest-db-service
       volumes:
         - name: certbot-conf-volume-mount
           persistentVolumeClaim:
@@ -204,10 +221,10 @@ metadata:
     dev.okteto.com/auto-ingress: "private"
 spec:
   selector:
-    app: django-api-rest-container
+    app: nginx-api-rest-container
   type: ClusterIP
   ports:
-    - name: "django-api-rest"
+    - name: "nginx-api-rest"
       protocol: TCP
       port: 443
       targetPort: 443
