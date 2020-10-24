@@ -43,7 +43,7 @@ data:
           listen 80 default_server;
           server_name _;
 
-          return 301 https://django-api-rest-service:8000$request_uri;
+          return 301 http://django-api-rest-service:8000$request_uri;
 
       }
       server {
