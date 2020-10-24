@@ -51,6 +51,8 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = [
     "http://127.0.0.1:8080",
     "http://localhost:8080",
+    "https://nginx-api-rest-service-calvarado2004.cloud.okteto.net:443",
+    "https://nginx-api-rest-service.calvarado2004.svc.cluster.local:443"
 ]
 
 MIDDLEWARE = [
