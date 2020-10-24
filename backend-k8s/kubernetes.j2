@@ -107,6 +107,15 @@ spec:
                   key: password
             - name: POSTGRES_HOST
               value: django-api-rest-db-service
+        - name: certbot-container
+          image: certbot/certbot
+          volumeMounts: 
+            - name: certbot-conf-volume-mount
+              mountPath: /etc/letsencrypt
+            - name: certbot-www-volume-mount
+              mountPath: /var/www/certbot
+          command: ["/bin/sh"]
+          args: ["-c", "trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;"]
         - name: nginx-api-rest-container
           image: nginx:latest
           volumeMounts: 
@@ -138,15 +147,6 @@ spec:
                   key: password
             - name: POSTGRES_HOST
               value: django-api-rest-db-service
-        - name: certbot-container
-          image: certbot/certbot
-          volumeMounts: 
-            - name: certbot-conf-volume-mount
-              mountPath: /etc/letsencrypt
-            - name: certbot-www-volume-mount
-              mountPath: /var/www/certbot
-          command: ["/bin/sh"]
-          args: ["-c", "trap exit TERM; while :; do certbot renew; sleep 1m & wait $${!}; done;"]
       volumes:
         - name: certbot-conf-volume-mount
           persistentVolumeClaim:
