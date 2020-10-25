@@ -101,7 +101,7 @@ metadata:
   name: nginx-api-rest
   namespace: calvarado2004
   annotations:
-    dev.okteto.com/auto-ingress: "domain"
+    dev.okteto.com/auto-ingress: "true"
 spec:
   selector:
     app: nginx-api-rest-container
