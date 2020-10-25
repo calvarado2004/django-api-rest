@@ -38,7 +38,7 @@ data:
       include /etc/nginx/conf.d/*.conf;
 
       upstream backend_server {
-          server django-api-rest-service.calvarado2004.svc.cluster.local:8000;
+          server django-api-rest.calvarado2004.svc.cluster.local:8000;
       }
 
       server {
@@ -193,10 +193,10 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: nginx-api-rest-service
+  name: nginx-api-rest
   namespace: calvarado2004
   annotations:
-    dev.okteto.com/auto-ingress: "true"
+    dev.okteto.com/auto-ingress: "domain"
 spec:
   selector:
     app: nginx-api-rest-container
