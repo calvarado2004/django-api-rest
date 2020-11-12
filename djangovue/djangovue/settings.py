@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'listelement',
     'rest_framework',
     'corsheaders',
+    'comment',
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
