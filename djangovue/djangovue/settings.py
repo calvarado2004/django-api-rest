@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'comment',
+    'bootstrapform',
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
