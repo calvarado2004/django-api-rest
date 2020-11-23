@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Comment
 from .forms import CommentForm, ContactForm
@@ -18,6 +19,9 @@ def add(request):
             return redirect('index')
     else:
         form = CommentForm()
+        
+    #if(form.errors):
+    #    raise ValidationError(form.errors)
         
     return render(request, 'add.html', {'form': form})
 
