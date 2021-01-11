@@ -16,7 +16,7 @@ def add(request):
         print(form.errors.as_json())
         if form.is_valid():
             form.save()
-            return redirect('index')
+            return redirect('comment:index')
     else:
         form = CommentForm()
         
@@ -31,15 +31,22 @@ def contact(request):
         form = ContactForm(request.POST,request.FILES)
         
         if form.is_valid():
+            
+            if 'document' in request.FILES:
+                print('Content')
+            else:
+                print('No file uploaded')
+                
             contact = Contact()
             contact.name = form.cleaned_data['name'] 
             contact.surname = form.cleaned_data['surname'] 
             contact.phone = form.cleaned_data['phone'] 
             contact.email = form.cleaned_data['email']
-            contact.birth_date = form.cleaned_data['birth_date']   
-            contact.document = request.FILES['document']
+            contact.birth_date = form.cleaned_data['birth_date'] 
+            if 'document' in request.FILES:  
+                contact.document = request.FILES['document']
             contact.save()
-            print('Valid ' + form.cleaned_data['name'])
+            return redirect('comment:contact')
         else:
             print('Not valid')
 
@@ -59,7 +66,7 @@ def update(request, pk):
         form = CommentForm(request.POST, instance=comment)
         if form.is_valid():
             form.save(commit=True)
-            return redirect('update', pk=comment.id)
+            return redirect('comment:update', pk=comment.id)
     else:
         form = CommentForm(instance=comment)
         
