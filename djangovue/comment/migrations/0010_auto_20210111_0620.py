@@ -3,7 +3,7 @@
 from django.db import migrations, models
 
 def insert_data(apps, schema_editor):
-    type_contact = apps.get_model('typecontact', 'TypeContact')
+    type_contact = apps.get_model('comment', 'TypeContact')
     contact_business = type_contact(name = "Business")
     contact_business.save()
     contact_government = type_contact(name = "Government")
