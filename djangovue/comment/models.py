@@ -10,13 +10,7 @@ class Comment(models.Model):
     
 class TypeContact(models.Model):
     
-    TYPE = (
-        (1,"Business"),
-        (2,"School"),
-        (3,"Club"),
-        (4,"Work")
-    )
-    name = models.CharField(max_length=50, choices=TYPE, default=1)
+    name = models.CharField(max_length=50)
     
     def __str__(self):
         return self.name
@@ -26,13 +20,6 @@ class Contact(models.Model):
         ('F', 'Female'),
         ('N', 'Non binary'))
     
-    TYPE = (
-        (1,"Business"),
-        (2,"School"),
-        (3,"Club"),
-        (4,"Work")
-    )
-    
     name = models.CharField(max_length=255)
     email = models.CharField(max_length=100)
     surname = models.CharField(max_length=255)
@@ -40,4 +27,4 @@ class Contact(models.Model):
     birth_date = models.DateField()
     vgender = models.CharField(max_length=15, choices=GENDER, default='M')
     document = models.FileField(upload_to='uploads/contact',default='',null=True)
-    type_contact = models.ForeignKey(TypeContact, choices=TYPE, on_delete=models.CASCADE, default=1)
+    type_contact = models.ForeignKey(TypeContact, on_delete=models.CASCADE)

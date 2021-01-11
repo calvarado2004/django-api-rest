@@ -30,6 +30,7 @@ class ContactForm(forms.Form):
     GENDER = ( ('M', 'Male'),
                ('F', 'Female'),
                ('N', 'Non binary'))
+
     
     name = forms.CharField(label="Name:",initial='John',required=True,max_length=255, min_length=4, validators=[MinLengthValidator(4)])
     email = forms.CharField(label='Email:', initial='john@mail.com', validators=[EmailValidator(message='You did not send a valid email'),MinLengthValidator(6)])
