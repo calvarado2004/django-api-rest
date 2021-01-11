@@ -1,6 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Comment
+from .models import Comment, Contact
 from .forms import CommentForm, ContactForm
 
 # Create your views here.
@@ -31,6 +31,14 @@ def contact(request):
         form = ContactForm(request.POST,request.FILES)
         
         if form.is_valid():
+            contact = Contact()
+            contact.name = form.cleaned_data['name'] 
+            contact.surname = form.cleaned_data['surname'] 
+            contact.phone = form.cleaned_data['phone'] 
+            contact.email = form.cleaned_data['email']
+            contact.birth_date = form.cleaned_data['birth_date']   
+            contact.document = request.FILES['document']
+            contact.save()
             print('Valid ' + form.cleaned_data['name'])
         else:
             print('Not valid')
