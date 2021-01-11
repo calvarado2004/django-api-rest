@@ -26,21 +26,19 @@ class CommentForm(ModelForm):
 from django import forms
 
 class ContactForm(forms.Form):
-    
-    CHOICE = ( (1,'Business'),(2,'Government'),(3,'JointVenture') )
-    
+        
     GENDER = ( ('M', 'Male'),
                ('F', 'Female'),
                ('N', 'Non binary'))
     
-    name = forms.CharField(label="Name:",initial='Joseph',required=True,max_length=255, min_length=5, validators=[MinLengthValidator(5)])
-    email = forms.CharField(label='Email:', validators=[EmailValidator(message='You did not send a valid email'),MinLengthValidator(6)])
-    surname = forms.CharField(label="Last Name:",initial='Smith',required=True,max_length=255, min_length=5)
-    phone = forms.RegexField(label='Phone',initial='(980)447-3408',regex='\(\w{3}\)\w{3}-\w{4}',max_length=13,min_length=13)
+    name = forms.CharField(label="Name:",initial='John',required=True,max_length=255, min_length=4, validators=[MinLengthValidator(4)])
+    email = forms.CharField(label='Email:', initial='john@mail.com', validators=[EmailValidator(message='You did not send a valid email'),MinLengthValidator(6)])
+    surname = forms.CharField(label="Last Name:",initial='Doe',required=True,max_length=255, min_length=3)
+    phone = forms.RegexField(label='Phone',initial='(123)123-1234',regex='\(\w{3}\)\w{3}-\w{4}',max_length=13,min_length=13)
     birth_date = forms.DateField(label='Birth Date:',initial='1900-01-20')
-    document = forms.FileField(label='Document', required=False)
-    terms = forms.BooleanField(label='Terms and conditions')
-    #type_contact = forms.ChoiceField(label='Type of contact',choices=CHOICE, initial=2)
     type_contact = forms.ModelChoiceField(label='Type of contact', queryset=TypeContact.objects.all(),initial=2)
-    vgender = forms.ChoiceField(label='Gender', choices=GENDER)
+    vgender = forms.ChoiceField(label='Gender', choices=GENDER, initial=1)
+    terms = forms.BooleanField(label='I Accept terms and conditions')
+    document = forms.FileField(label='Document', required=False)
+
             

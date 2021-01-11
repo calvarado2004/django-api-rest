@@ -7,16 +7,23 @@ class Comment(models.Model):
     
     def __str__(self):
         return 'Comment #{}'.format(self.id)
-class Contact(models.Model):
-    name = models.CharField(max_length=255)
-    email = models.CharField(max_length=100)
-    surname = models.CharField(max_length=255)
-    phone = models.CharField(max_length=15)
-    birth_date = models.DateField()
-    document = models.FileField(upload_to='uploads/contact',default='',null=True)
-
+    
 class TypeContact(models.Model):
     name = models.CharField(max_length=50)
     
     def __str__(self):
         return self.name
+class Contact(models.Model):
+    
+    GENDER = ( ('M', 'Male'),
+        ('F', 'Female'),
+        ('N', 'Non binary'))
+    
+    name = models.CharField(max_length=255)
+    email = models.CharField(max_length=100)
+    surname = models.CharField(max_length=255)
+    phone = models.CharField(max_length=15)
+    birth_date = models.DateField()
+    vgender = models.CharField(max_length=15, choices=GENDER, default='M')
+    document = models.FileField(upload_to='uploads/contact',default='',null=True)
+    type_contact = models.ForeignKey(TypeContact, on_delete=models.CASCADE, default=1)

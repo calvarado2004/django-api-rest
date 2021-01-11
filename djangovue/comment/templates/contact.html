@@ -14,26 +14,39 @@
 </head>
 <body>
 
-    <div class="container">
-        <form action="" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
+    <div class="container mt-3">
 
-            {% if form.errors %}
-                <br>
-                {% for field in form %}
-                    {% for error in field.errors %}
-                        <div class="alert alert-danger">
-                            <strong>{{ field.name }}:</strong> {{ error }}
-                        </div>
+        {% if messages %}
+            {% for m in messages %}
+              <div class="alert {% if m.tags %}  alert-{{ m.tags }} {% endif %}">{{ m }}</div>
+            {% endfor %}
+        {% endif %}
+
+       <div class="card">
+           <div class="card-header">
+               <h3>Contact Form</h3>
+           </div>
+           <div class="card-body">
+            <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+    
+                {% if form.errors %}
+                    <br>
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <div class="alert alert-danger">
+                                <strong>{{ field.name }}:</strong> {{ error }}
+                            </div>
+                        {% endfor %}
                     {% endfor %}
-                {% endfor %}
-            {% endif %}
-
-            {{ form|bootstrap }}
-
-
-            <input type="submit" value="Send">
-        </form>
+                {% endif %}
+    
+                {{ form|bootstrap }}
+    
+                <input type="submit" value="Send" class="btn btn-primary">
+            </form>
+           </div>
+       </div>
     </div>
 
 </body>

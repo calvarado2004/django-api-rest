@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from .models import Comment, Contact
 from .forms import CommentForm, ContactForm
 
@@ -43,9 +44,14 @@ def contact(request):
             contact.phone = form.cleaned_data['phone'] 
             contact.email = form.cleaned_data['email']
             contact.birth_date = form.cleaned_data['birth_date'] 
+            contact.vgender = form.cleaned_data['vgender']
+            contact.type_contact = form.cleaned_data['type_contact']
             if 'document' in request.FILES:  
                 contact.document = request.FILES['document']
             contact.save()
+            
+            messages.add_message(request, messages.INFO,'Contact saved.')
+            
             return redirect('comment:contact')
         else:
             print('Not valid')
