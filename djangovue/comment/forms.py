@@ -31,4 +31,6 @@ class ContactForm(forms.Form):
     surname = forms.CharField(label="Last Name:",initial='Smith',required=True,max_length=255, min_length=5)
     phone = forms.RegexField(label='Phone',initial='(980)447-3408',regex='\(\w{3}\)\w{3}-\w{4}',max_length=13,min_length=13)
     birth_date = forms.DateField(label='Birth Date:',initial='1900-01-20')
+    document = forms.FileField(label='Document')
+    terms = forms.BooleanField(label='Terms and conditions')
             

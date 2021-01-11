@@ -28,9 +28,17 @@ def add(request):
 
 def contact(request):
     if request.method == 'POST':
-        form = ContactForm(request.POST)
+        form = ContactForm(request.POST,request.FILES)
+        
+        if form.is_valid():
+            print('Valid ' + form.cleaned_data['name'])
+        else:
+            print('Not valid')
+
     else:
         form = ContactForm()
+        
+    #print(request.FILES)
     
     return render(request, 'contact.html',{'form':form})
 
