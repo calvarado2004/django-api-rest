@@ -9,7 +9,14 @@ class Comment(models.Model):
         return 'Comment #{}'.format(self.id)
     
 class TypeContact(models.Model):
-    name = models.CharField(max_length=50)
+    
+    TYPE = (
+        (1,"Business"),
+        (2,"School"),
+        (3,"Club"),
+        (4,"Work")
+    )
+    name = models.CharField(max_length=50, choices=TYPE, default=1)
     
     def __str__(self):
         return self.name
