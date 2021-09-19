@@ -22,55 +22,6 @@ data:
   user: UG9zdGdyZXM=
   password: UG9zdGdyZXNrOHMk 
 ---
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: django-api-rest-db-deployment
-  namespace: calvarado2004
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: django-api-rest-db-container
-  template:
-    metadata:
-      labels:
-        app: django-api-rest-db-container
-        tier: backend
-    spec:
-      containers:
-        - name: django-api-rest-db-container
-          image: postgres:12.4
-          env:
-            - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: django-api-rest-credentials
-                  key: user
-
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: django-api-rest-credentials
-                  key: password
-
-            - name: POSTGRES_DB
-              value: djangovuedb
-
-            - name: PGDATA
-              value: /var/lib/postgresql/data/pgdata
-
-          ports:
-            - containerPort: 5432
-          volumeMounts:
-            - name: django-api-rest-volume-mount
-              mountPath: "/var/lib/postgresql/data"
-
-      volumes:
-        - name: django-api-rest-volume-mount
-          persistentVolumeClaim:
-            claimName: django-api-rest-pvc
----
 kind: Service
 apiVersion: v1
 metadata:
@@ -83,3 +34,59 @@ spec:
     - protocol: TCP
       port: 5432
       targetPort: 5432
+---
+# PostgreSQL StatefulSet
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: django-api-rest-db-statefulset
+  namespace: calvarado2004
+spec:
+  serviceName: postgresql-db-service
+  selector:
+    matchLabels:
+      app: django-api-rest-db-container
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: django-api-rest-db-container
+        tier: backend
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: "app"
+                  operator: In
+                  values:
+                  - postgresql-db
+            topologyKey: "kubernetes.io/hostname"
+      containers:
+        - name: django-api-rest-db-container
+          image: postgres:12.4
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: django-api-rest-volume-mount
+              mountPath: /var/lib/postgresql/data
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: django-api-rest-credentials
+                  key: user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: django-api-rest-credentials
+                  key: password
+            - name: POSTGRES_DB
+              value: djangovuedb
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+      volumes:
+        - name: django-api-rest-volume-mount
+          persistentVolumeClaim:
+            claimName: django-api-rest-pvc
