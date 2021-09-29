@@ -54,6 +54,7 @@ CORS_ORIGIN_WHITELIST = [
     "http://127.0.0.1:8080",
     "http://localhost:8080",
     "https://nginx-api-rest.calvarado04.com:443",
+    "http://django-api-rest-service:8000"
 ]
 
 MIDDLEWARE = [
