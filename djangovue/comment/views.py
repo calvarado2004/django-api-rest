@@ -4,6 +4,10 @@ from django.contrib import messages
 from .models import Comment, Contact
 from .forms import CommentForm, ContactForm
 
+
+def testview(request):
+    return render(request, 'test/testview.html')
+
 # Create your views here.
 def index(request):
     comments = Comment.objects.all()

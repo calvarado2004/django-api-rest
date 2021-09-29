@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+
+    {% load static %}
+
+
+    <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}">
+
+</head>
+<body>
+
+    {% include "test/partials/header.html" %}
+
+    <h1>App elements</h1>
+
+    <div class="container mt-3 mb-7">
+
+        {% block content %}
+
+        {% endblock %}
+
+    </div>
+
+    {% include "test/partials/footer.html" %}
+
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+
+    <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
+    
+    
+</body>
+</html>

@@ -1,11 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Django</title>
-</head>
-<body>
+{% extends "base.html"%}
+
+{% load bootstrap %}
+
+{% block content %}
+
     {% for c in comments %}
       <div>
           <p>
@@ -13,5 +11,5 @@
           </p>
       </div>
     {% endfor %}
-</body>
-</html>
+
+{% endblock %}

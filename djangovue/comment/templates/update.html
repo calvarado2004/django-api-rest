@@ -1,14 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update</title>
-</head>
-<body>
+{% extends "base.html"%}
+
+{% load bootstrap %}
+
+{% block content %}
 
     {{ form.errors }}
-    <form action="{% url 'update' comment.id %}" method="POST">
+    <form action="{% url 'comment:update' comment.id %}" method="POST">
 
         {% csrf_token %}
         
@@ -22,5 +19,5 @@
             width: 100%;
         }
     </style>
-</body>
-</html>
+
+{% endblock %}
